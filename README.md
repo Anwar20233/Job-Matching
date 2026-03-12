@@ -1,66 +1,57 @@
-# Job-Matching
----
+# Kafaa'at Job Matching System
 
-# 🎯 نظام كفاءات التوليدي (Generative Kafaa'at Job Recommender)
+## About the Project
 
-## 📌 نبذة عن المشروع
+This project is an integrated AI system aimed at guiding job seekers to discover suitable opportunities based on the "Jadarat" platform dataset (approximately 7,000 job postings).
 
-هذا المشروع عبارة عن نموذج ذكاء اصطناعي توليدي مصغر (Mini-LLM) مبني بالكامل من الصفر باستخدام معمارية المحولات (Transformers) المعتمدة في لغة PyTorch. يهدف النظام إلى توليد توصيات وتوجيهات وظيفية مخصصة باللغة العربية بناءً على مجموعة بيانات "جدارات"، مما يسهل على الباحثين عن عمل إيجاد الفرص المناسبة لمؤهلاتهم.
-
----
-
-## 🚀 مراحل المشروع والهيكلية التقنية (Project Phases)
-
-تم تقسيم المشروع إلى المكونات الأساسية التالية لتلبية المعايير الهندسية لتعلم الآلة:
-
-1. **معالجة البيانات والترميز (Data & Tokenization):**
-* **التنظيف:** تنظيف مجموعة بيانات "جدارات" (حوالي 7000 سطر)، إزالة التشكيل، وتوحيد الهمزات والرموز العربية للتقليل من التشتت اللغوي.
-* **الترميز:** بناء مرمز BPE (Byte-Pair Encoding) مخصص للغة العربية وتدريبه من الصفر مع تحديد حجم المفردات (Vocabulary Size) بـ 5000 رمز ليتناسب مع الحجم الصغير لمجموعة البيانات ويمنع تناثر المصفوفات (Sparsity).
-
-
-2. **معمارية النموذج (Model Architecture):**
-* بناء كتل المحولات (Transformer Blocks) من الصفر دون استخدام مكتبات جاهزة مثل HuggingFace.
-* يتضمن النموذج طبقات: `Multi-Head Attention`، `Residual Connections`، `Layer Normalization`، وشبكات أمامية (Feed-Forward).
-* تم تضمين قناع الإخفاء (Look-ahead Mask) لضمان التوليد التلقائي (Autoregressive Generation) للنصوص.
-
-
-3. **التدريب والتحسين (Training & Optimization):**
-* استخدام دالة الخسارة `CrossEntropyLoss` ومحسن الأوزان `AdamW`.
-* دمج تقنيات منع التكيف الزائد (Overfitting) مثل `Dropout` وقص التدرجات (Gradient Clipping).
-* إضافة ميزة التوقف المبكر (Early Stopping) ووضع التجربة السريعة (Demo Mode) لتسريع الفحص الأولي.
-
-
-4. **التقييم (Evaluation):**
-* قياس أداء النموذج باستخدام مقياس الحيرة (Perplexity) على بيانات اختبار غير مرئية مسبقاً (Held-out test set).
-* تصميم آلية تقييم افتراضية لربط المخرجات بنموذج لغوي ضخم (LLM as a Judge) لتقييم الترابط النحوي واللغوي.
-
-
-5. **النشر (Deployment):**
-* بناء واجهة تفاعلية باستخدام مكتبة `Gradio` تتيح للمستخدم إدخال المسمى الوظيفي المطلوب، لتتولى الأداة توليد التوصية الوظيفية وتقديم نصائح مهنية فورية.
-
-
+To achieve the best possible results, **two different Artificial Intelligence models were built, tested, and compared** to select the most accurate and practical solution for the job market context.
 
 ---
 
-## ⚠️ القيود التقنية وأنماط الفشل (Technical Limitations & Failure Modes)
+## The AI Models Developed
 
-نظراً لطبيعة الموارد وحجم البيانات، يواجه النموذج الحالي بعض القيود الموثقة:
+### Model 1: Generative AI (Transformers)
 
-* **التكرار والهلوسة (Repetition & Hallucination):** نظراً لصغر حجم البيانات (7041 سطر فقط) مقارنة بملايين النصوص المطلوبة لتدريب نماذج طليقة، قد يعاني النموذج من تكرار بعض الكلمات في نهاية التوليد أو اقتراح مهارات لا تتطابق تماماً مع السياق.
-* **فقدان السياق (Context Loss):** في النصوص الطويلة، قد ينسى النموذج المُدخل الأساسي (Prompt) بسبب صغر حجم نافذة الانتباه (Context Window) التي تم تقليصها لتناسب الذاكرة المتاحة.
-* **الموارد الحسابية:** تم تصغير حجم المعمارية (Hidden Layers & Embeddings) لضمان قدرة النموذج على التدريب ضمن بيئة Google Colab المجانية دون استنفاد الذاكرة.
+* **Concept:** Building a Mini-LLM from scratch using Transformer architecture in PyTorch to autoregressively generate job recommendations word by word.
+* **Technologies:** `PyTorch`, `BPE Tokenization`, `Multi-Head Attention`.
+* **Mechanism:** The model was trained on the dataset's job texts to understand Arabic context and synthesize new, custom recommendations based on user input.
 
----
+### Model 2: Retrieval-Based AI — *The Approved & Best Performing Model* 
 
-## ⚙️ طريقة التشغيل
-
-1. تأكد من تثبيت المكتبات المطلوبة: `torch`, `tokenizers`, `gradio`, `pandas`, `tqdm`.
-2. ضع ملف `Jadarat_data.csv` في المسار المحدد (أو قم بتعديل مسار القراءة في الكود).
-3. قم بتشغيل الخلايا بالترتيب.
-4. **ملاحظة للتدريب:** الكود مضبوط حالياً على وضع `DEMO_MODE = True` لتسريع التدريب لغرض العرض. للحصول على أداء لغوي أفضل، قم بتغيير القيمة إلى `False` وارفع عدد الـ `epochs`.
-5. ستظهر واجهة Gradio في الخلية الأخيرة مع رابط (Public URL) لمشاركتها.
+* **Concept:** Instead of generating entirely new text, this model relies on semantic understanding and Vector Similarity Search to retrieve the most accurate and relevant job that actually exists in the database.
+* **Technologies:** `TF-IDF Vectorizer`, `FAISS (Facebook AI Similarity Search)`, `Scikit-learn`.
+* **Mechanism:** 1. Converts all job texts into numerical vectors.
+2. Converts the user's input (qualifications, experience, city) into a vector.
+3. Uses the ultra-fast `FAISS` library to calculate the mathematical distance (similarity) between the user's query and available jobs, extracting the closest exact match and presenting it within a professional text template.
 
 ---
 
+## Results & Conclusion
+
+After testing both models, **it was conclusively proven that Model 2 (Retrieval-Based using FAISS) delivered vastly superior and more practical results compared to Model 1**. The reasons for this superiority include:
+
+1. **Factual Accuracy:** The retrieval-based model extracts real, existing jobs from the "Jadarat" database. In contrast, the Generative model suffered from "Hallucination," occasionally inventing non-existent job titles or cities.
+2. **Dataset Size Constraints:** The dataset consists of roughly 7,000 rows. While this is an ideal size for TF-IDF and FAISS to operate with high efficiency, it is severely insufficient to train a Generative Transformer model from scratch to output perfectly fluent Arabic text without overfitting.
+3. **Speed & Efficiency:** The approved FAISS model is significantly faster in response time and consumes far fewer computational resources (it runs highly efficiently on a standard CPU), making it ideal for real-world application and deployment.
+
 ---
 
+## Data Preprocessing Pipeline
+
+Both models shared a strict Arabic data cleaning pipeline to ensure high-quality input, which included:
+
+* **Diacritics Removal:** Stripping out all Arabic diacritics (Tashkeel).
+* **Hamza Normalization:** Unifying all forms of Alef (أ، إ، آ) into a single standard Alef (ا).
+* **Character Normalization:** Unifying similar letters (e.g., converting ى to ي, and ؤ to و).
+* **Punctuation Removal:** Stripping non-textual symbols and extra whitespaces to reduce noise and help the models focus on semantic meaning.
+
+---
+
+## How to Run (For the Approved FAISS Model)
+
+1. Ensure the required libraries are installed: `numpy`, `pandas`, `scikit-learn`, `faiss-cpu`, `gradio`.
+2. Place the dataset file `Jadarat_data.csv` in the correct working directory.
+3. Run the cells in the provided `Jupyter Notebook` sequentially.
+4. The interactive `Gradio` UI will launch in the final cell, generating a Public URL to test the job recommendation chatbot in real-time.
+
+---
