@@ -55,3 +55,5 @@ Both models shared a strict Arabic data cleaning pipeline to ensure high-quality
 4. The interactive `Gradio` UI will launch in the final cell, generating a Public URL to test the job recommendation chatbot in real-time.
 
 ---
+## GenAi link
+https://colab.research.google.com/drive/1vJrqdgNbiNeHqzGa69crbu0DE9CGPe8m?usp=sharing
